@@ -37,8 +37,14 @@
 
 (define (unique s)
   ; 'YOUR-CODE-HERE
-  (if (null? s)
-  '()
-  (cons (car s) (unique (filter (lambda (i) (not (eq? i (car s)))) (cdr s))))
-  )
-)
+  (if (null? s) nil 
+    (cons 
+      (car s) 
+      (unique 
+        (filter 
+          (lambda (i) (not (eq? i (car s)))) 
+          (cdr s)
+        )
+      )
+    )
+  ))
