@@ -24,6 +24,7 @@
   (cond ((=number? a1 0) a2)
         ((=number? a2 0) a1)
         ((and (number? a1) (number? a2)) (+ a1 a2))
+        ((and (product? a1) (product? a2) (eq? (second-operand a1) (second-operand a2))) (make-product (+ (first-operand a1) (first-operand a2)) (second-operand a1)))
         (else (list '+ a1 a2))))
 (define (sum? x)
   (and (list? x) (eq? (car x) '+)))
@@ -36,6 +37,7 @@
         ((=number? m1 1) m2)
         ((=number? m2 1) m1)
         ((and (number? m1) (number? m2)) (* m1 m2))
+        ((and (exp? m1) (exp? m2) (eq? (first-operand m1) (first-operand m2))) (make-exp (first-operand m1) (make-sum (second-operand m1) (second-operand m2))))
         (else (list '* m1 m2))))
 (define (product? x)
   (and (list? x) (eq? (car x) '*)))
@@ -65,6 +67,7 @@
   (cond ((=number? exponent 0) 1)
         ((=number? exponent 1) base)
         ((and (number? exponent) (number? base)) (expt base exponent))
+        ((and (exp? base) (number? exponent)) (list '^ (first-operand base) (make-product (second-operand base) exponent)))
         (else (list '^ base exponent))
   )
 )
@@ -80,8 +83,11 @@
 (define (derive-exp exp var)
   ; 'YOUR-CODE-HERE
   ; [f(x)^(g(x))]' = f(x)^(g(x) - 1) * g(x)
-  (make-product 
-    (second-operand exp)
-    (make-exp (first-operand exp) (- (second-operand exp) 1))
+  (make-product
+    (make-product
+      (second-operand exp)
+      (make-exp (first-operand exp) (make-sum (second-operand exp) -1))
+    )
+    (derive (first-operand exp) var)
   )
 )
