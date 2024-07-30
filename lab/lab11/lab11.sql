@@ -1,13 +1,18 @@
 .read sp20data.sql
 
 CREATE TABLE obedience AS
-  SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
+  SELECT seven, instructor FROM students;
+  -- SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
 
 CREATE TABLE smallest_int AS
-  SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
+SELECT time, smallest FROM students WHERE smallest > 2 ORDER BY smallest LIMIT 20; 
+  -- SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
 
 CREATE TABLE matchmaker AS
-  SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
+SELECT a.pet, a.song, a.color, b.color
+FROM students as a, students as b 
+WHERE a.time < b.time and a.pet = b.pet and a.song = b.song;
+  -- SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
 
 CREATE TABLE parents AS
   SELECT "abraham" AS parent, "barack" AS child UNION
