@@ -28,7 +28,6 @@ def prune_min(t):
     t.branches = [b for b in t.branches if b.label == min(branch_labels)]
 
     return
-    
 
 def remainders_generator(m):
     """
@@ -74,7 +73,6 @@ def remainders_generator(m):
 
     for i in range(m):
         yield ith_generator(i)
-
 
 def foldr(link, fn, z):
     """ Right fold
@@ -166,10 +164,19 @@ class CheckingAccount(Account):
         return Account.withdraw(self, amount + self.withdraw_fee)
 
     "*** YOUR CODE HERE ***"
+    def deposit_check(self, check):
+        if check.deposited or check.payable_to != self.holder:
+            print("The police have been notified.")
+        else:
+            check.deposited = True
+            return self.deposit(check.value)
 
 class Check(object):
     "*** YOUR CODE HERE ***"
-
+    def __init__(self, payable_to, value):
+        self.payable_to = payable_to
+        self.value = value
+        self.deposited = False
 
 def foldl(link, fn, z):
     """ Left fold
@@ -194,6 +201,7 @@ def filterl(lst, pred):
     Link(4, Link(2))
     """
     "*** YOUR CODE HERE ***"
+    return foldr(lst, lambda x, y: Link(x, y) if pred(x) else y, Link.empty)
 
 def reverse(lst):
     """ Reverses LST with foldl
@@ -206,6 +214,7 @@ def reverse(lst):
     True
     """
     "*** YOUR CODE HERE ***"
+    return foldl(lst, lambda x, y: Link(y, x), Link.empty)
 
 identity = lambda x: x
 
@@ -221,6 +230,13 @@ def foldl2(link, fn, z):
     """
     def step(x, g):
         "*** YOUR CODE HERE ***"
+        # def execute_step(a):
+        #     return g(fn(a, x))
+        # return execute_step
+
+        # Alternate solution using lambda
+        return lambda z: g(fn(z, x))
+
     return foldr(link, step, identity)(z)
 
 def num_splits(s, d):
@@ -237,6 +253,16 @@ def num_splits(s, d):
     12
     """
     "*** YOUR CODE HERE ***"
+
+    def get_partitions(left = [], right = [], ls = s):
+        if ls == []:
+            yield left, right
+            return
+        yield from get_partitions(left + [ls[0]], right, ls[1:])
+        yield from get_partitions(left, right + [ls[0]], ls[1:])
+
+    within_d = list(filter(lambda x: abs(sum(x[0]) - sum(x[1])) <= d, list(get_partitions())))
+    return len(within_d) // 2
 
 # Link Class
 class Link:
